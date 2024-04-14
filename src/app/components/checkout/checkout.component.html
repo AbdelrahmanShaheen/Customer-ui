@@ -4,12 +4,24 @@
             <form [formGroup]="checkoutFormGroup" (ngSubmit)="onSubmit()">
                 <div formGroupName="customer" class="form-area">
                     <h3>checkout information</h3>
-                    
+
                     <div class="row">
                         <div class="col-md-2"><label>Customer Email</label></div>
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="email" type="text">
+                                <div *ngIf="email?.invalid && (email?.dirty || email?.touched)"
+                                    class="alert alert-danger">
+
+                                    <div *ngIf="email?.errors?.['required'] || email?.errors?.['notOnlyWhitespace']">
+                                        Email is required
+                                    </div>
+
+                                    <div *ngIf="email?.errors?.['pattern']">
+                                        Email must be a valid email address
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -18,6 +30,21 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="cvv" type="text">
+                                <div *ngIf="cvv?.invalid && (cvv?.dirty || cvv?.touched)" class="alert alert-danger">
+
+                                    <div *ngIf="cvv?.errors?.['required'] || cvv?.errors?.['notOnlyWhitespace']">
+                                        CVV is required
+                                    </div>
+                                
+                                    <div *ngIf="cvv?.errors?.['pattern']">
+                                        CVV must be a valid number
+                                    </div>
+                                
+                                    <div *ngIf="cvv?.errors?.['minlength'] || cvv?.errors?.['maxlength']">
+                                        CVV must be exactly 4 digits
+                                    </div>
+                                
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -26,6 +53,21 @@
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="cardNumber" type="text">
+                                <div *ngIf="cardNumber?.invalid && (cardNumber?.dirty || cardNumber?.touched)" class="alert alert-danger">
+
+                                    <div *ngIf="cardNumber?.errors?.['required'] || cardNumber?.errors?.['notOnlyWhitespace']">
+                                        Card Number is required
+                                    </div>
+                                
+                                    <div *ngIf="cardNumber?.errors?.['pattern']">
+                                        Card Number must be a valid number
+                                    </div>
+                                
+                                    <div *ngIf="cardNumber?.errors?.['minlength'] || cardNumber?.errors?.['maxlength']">
+                                        Card Number must be exactly 16 digits
+                                    </div>
+                                
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -38,6 +80,9 @@
                 </div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-info">Purchase</button>
+                    <div *ngIf="error" class="alert alert-danger">
+                        {{ error }}
+                      </div>
                 </div>
             </form>
         </div>

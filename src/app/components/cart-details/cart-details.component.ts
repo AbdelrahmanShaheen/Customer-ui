@@ -11,6 +11,7 @@ export class CartDetailsComponent implements OnInit{
   cartItems: CartItem[] = [];
   totalPrice: number = 0;
   totalQuantity: number = 0;
+  errorMessage: string = '';
   constructor(private cartService: CartService) {
     
   }
@@ -35,5 +36,25 @@ export class CartDetailsComponent implements OnInit{
   }
   remove(cartItem: CartItem) {
     this.cartService.remove(cartItem);
+  }
+  applyCoupon(couponCode: string) {
+    this.cartService.applyCoupon(couponCode).subscribe(
+      (data: any) => {
+        if (data.valid && data.currentNumberOfUsages < data.maxNumberOfUsages) {
+          if (data.valueType === 'fixed') {
+            this.cartService.totalPrice.next( this.cartService.currentTotalPrice - data.value);
+          } else if (data.valueType === 'percentage') {
+            this.cartService.totalPrice.next(this.cartService.currentTotalPrice * (1 - data.value / 100));
+          }
+          this.cartService.couponCode = couponCode;
+          this.errorMessage = ''; // Clear the error message
+        } else {
+          this.errorMessage = 'The coupon is not valid or has reached its maximum number of usages.';
+        }
+      },
+      error => {
+        this.errorMessage = 'The coupon is not valid or has reached its maximum number of usages.';
+      }
+    );
   }
 }
